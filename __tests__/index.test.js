@@ -1,36 +1,31 @@
-import createRouter from '../src/index.js';
+import serve from '../src/index.js';
 
 const routes = [
   {
-    path: '/courses', // маршрут
-    handler: { // обработчик
-      body: 'courses'
+    path: '/courses/:id',
+    handler: {
+      body: 'course'
     },
   },
   {
-    path: '/courses/basics',
-    handler: { // обработчик
-      body: 'basics'
+    path: '/courses/:course_id/exercises/:id',
+    handler: {
+      body: 'exercise'
     },
   },
 ];
 
 describe('test createRouter function:', () => {
   test('should return a route', () => {
-    expect(() => createRouter()).toThrow();
-  });
+    const path = '/courses/php_trees';
 
-  test('should return a route', () => {
-    const router = createRouter(routes);
-    const path = '/courses';
-
-    expect(router.serve(path)).toEqual(routes[0]);
+    expect(serve(routes, path))
+      .toMatchObject({ path: '/courses/php_trees', handler: { body: 'course' }, params: { id: 'php_trees' } });
   });
 
   test('should throw an error', () => {
-    const router = createRouter(routes);
     const path = '/no_such_path';
 
-    expect(() => router.serve(path)).toThrow();
+    expect(() => serve(routes, path)).toThrow();
   });
 });
